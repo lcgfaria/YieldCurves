@@ -1,21 +1,17 @@
 ---
 title: "PlotDatesCurves.Rmd"
-output: html_notebook
+output:
+  pdf_document: default
+  word_document: default
+  html_notebook: default
 ---
 
-********************************************************************************
+This code plots the yield curves for the Brazilian Bonds using the public data available from the Tesouro Direto site. <https://www.tesourotransparente.gov.br/>. The input worksheets can be downloaded, together with this code and R and Python function libraries, from the author's GitHub.
 
-This code plots the yield curves for the Brazilian Bonds using the public data available from the Tesouro Direto site.
-https://www.tesourotransparente.gov.br/. The input worksheets can be downloaded, together with this code and R and Python
-function libraries, from the author's GitHub.
+A specific given date is used to optimize the curves for parametric models using both the Differential Evolution and Steepest Descent methods, as well as a regression for a non parametric curve using the Kernel-Ridge model.
 
-A specific given date is used to optimize the curves for parametric models using both the Differential Evolution and Steepest Descent methods, 
-as well as a regression for a non parametric curve using the Kernel-Ridge model.
+This code can be used as an example to plot the curves and calculate errors. Our work includes additional codes to plot conclusions considering the whole historic data.
 
-This code can be used as an example to plot the curves and calculate errors. Our work includes additional codes to plot conclusions
-considering the whole historic data.
-
-********************************************************************************
 
 
 ```{r}
@@ -23,17 +19,16 @@ considering the whole historic data.
 
 # Identification ----------------------------------------------------------
 # 
-# FGV - Fundacao Getulio Vargas
+# FGV - Fundacao Getúlio Vargas
 # EESP - Escola de Economia São Paulo
 # MPEF - Mestrado Profissional em Economia e Finanças
 #
-# Computacao Aplicada (Prof.Ernesto Colla)
-# End-course project
+# Projeto de dissertação
 #
 # YIELD CURVES COMPARISON
 # Autor: Luis Giovanni Faria
 #
-# Date: 13/09/2022
+# Date: 23/01/2023
 #
 
 # Initialization ----------------------------------------------------------
@@ -41,7 +36,6 @@ considering the whole historic data.
 # Remove working set
 rm(list=ls())
 graphics.off()
-#suppressWarnings(expr)
 
 # Working Directory
 sysInfo <- Sys.info()
@@ -89,9 +83,7 @@ models <- c("NS","BL","NSS","DP","BC") # Models to optimize
 
 ```
 
-********************************************************************************
-Here we define the reference date to be used to calculate and plot the curves.
-********************************************************************************
+Here we define the reference date to be used to calculate and plot the curves. 
 
 ```{r}
 
@@ -127,7 +119,6 @@ for (i in 1:nrow(bondSet)) {
 print(bondSet)
 
 ```
-
 
 ```{r}
 ###############################################################################
@@ -167,8 +158,6 @@ for (i in 1:numberOfPoints) {
 print(bondSet)
 
 ```
-
-
 
 ```{r}
 
@@ -285,8 +274,6 @@ print(bondSet)
 
 ```
 
-
-
 ```{r}
 
 ###############################################################################
@@ -342,7 +329,6 @@ print(bondSet)
 
 ```
 
-
 ```{r}
 
 ############################################################################
@@ -386,7 +372,6 @@ print(bondSet)
 
 ```
 
-
 ```{r}
 # Plot model curves curve
 ggplot(data=bondSet,aes(x=DateMaturity))+
@@ -413,5 +398,3 @@ ggplot(data=bondSet,aes(x=DateMaturity))+
 ####################################################################################################
 
 ```
-
-

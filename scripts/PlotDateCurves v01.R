@@ -1,17 +1,16 @@
 
 # Identification ----------------------------------------------------------
 # 
-# FGV - Fundacao Getulio Vargas
+# FGV - Fundacao Getúlio Vargas
 # EESP - Escola de Economia São Paulo
 # MPEF - Mestrado Profissional em Economia e Finanças
 #
-# Computacao Aplicada (Prof.Ernesto Colla)
-# End-course project
+# Projeto de dissertação
 #
 # YIELD CURVES COMPARISON
 # Autor: Luis Giovanni Faria
 #
-# Date: 13/09/2022
+# Date: 23/01/2023
 #
 
 # Initialization ----------------------------------------------------------
