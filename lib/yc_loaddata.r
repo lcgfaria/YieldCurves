@@ -4,9 +4,6 @@
 # EESP - Escola de Economia São Paulo
 # MPEF - Mestrado Profissional em Economia e Finanças
 #
-# Computacao Aplicada (Prof.Ernesto Colla)
-# End-course project
-#
 # YIELD CURVES COMPARISON
 # Autor: Luis Giovanni Faria
 #

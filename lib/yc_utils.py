@@ -111,7 +111,7 @@ def FitKR(C,g_solved,date):
     # get inverse of weights for fitting w=1/inv_w
     inv_w=(dur*B)**2*M
         
-    return ytm,B,dur,ttm,inv_w
+    return B,ytm,dur,ttm,inv_w
   
 ###############################################################################
 
