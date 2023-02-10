@@ -61,7 +61,7 @@ source_python("../lib/yc_utils.py")
 #br <- TRUE # define if working with Tesouro Direto input files
 #kr <- FALSE # run KR example set
 
-nsimDE <- 5 # number of simulations differential evolution
+nsimDE <- 10 # number of simulations differential evolution
 #nsimSD <- 10 # number of simulations steepest descent
 
 faceValue <- 1000
@@ -195,7 +195,7 @@ for (i in 1:length(uniqueYearMonth)) {
 
 rm(list=c("uniqueYearMonth","dates","subdates","i")) # remove temporary variables
 
-workingDates=c(as.Date("2021-09-30"),as.Date("2021-10-29"),as.Date("2021-11-30"),as.Date("2021-12-30"));k=1 # TESTE
+#workingDates=c(as.Date("2021-09-30"),as.Date("2021-10-29"),as.Date("2021-11-30"),as.Date("2021-12-30"));k=1 # TESTE
 
 nDateInitial <- 1
 nDateFinal <- length(workingDates)
@@ -536,7 +536,6 @@ for (k in nDateInitial:nDateFinal) {
   curvasF$KRoutDurW[posrow] <- sqrt(sum(bondFilter$KRoutErrPrice^2/bondFilter$InvW))*1e4
   curvasF$KRoutMatW[posrow] <- sqrt(sum(bondFilter$KRoutErrYield^2*bondFilter$TTM/max(bondFilter$TTM)))*1e4
   
-  
   # in-sample errors
   curvasF$NSSinYtm[posrow] <- sqrt(sum(bondFilter$NSSinErrYield^2))*1e4
   curvasF$NSSinRelPrice[posrow] <- sqrt(sum((bondFilter$NSSinErrPrice/bondFilter$PricePU)^2))*1e4
@@ -547,6 +546,13 @@ for (k in nDateInitial:nDateFinal) {
   curvasF$KRinRelPrice[posrow] <- sqrt(sum((bondFilter$KRinErrPrice/bondFilter$PricePU)^2))*1e4
   curvasF$KRinDurW[posrow] <- sqrt(sum(bondFilter$KRinErrPrice^2/bondFilter$InvW))*1e4
   curvasF$KRinMatW[posrow] <- sqrt(sum(bondFilter$KRinErrYield^2*bondFilter$TTM/max(bondFilter$TTM)))*1e4
+
+  # smoothness
+  curvasF$KRtension[posrow] <- sum(bondFilter$KRd1^2)*h/(as.numeric(max(bondFilter$DateMaturity)-dateReference)/daysYear)*1e4
+  curvasF$KRcurvature[posrow] <- sum(bondFilter$KRd2^2)*h/(as.numeric(max(bondFilter$DateMaturity)-dateReference)/daysYear)*1e4
+
+  curvasF$NSStension[posrow] <- sum(bondFilter$NSSd1^2)*h/(as.numeric(max(bondFilter$DateMaturity)-dateReference)/daysYear)*1e4
+  curvasF$NSScurvature[posrow] <- sum(bondFilter$NSSd2^2)*h/(as.numeric(max(bondFilter$DateMaturity)-dateReference)/daysYear)*1e4
   
   resultsF <- rbind(resultsF,bondFilter)
   
@@ -578,7 +584,7 @@ for (r in rows) {
 # rmse FILTERED
 
 for (r in rows) {
-  for (i in 1:(length(cols1)-2)) {
+  for (i in 1:(length(cols1))) {
     rmseF[r,cols[i+1]] <- mean(curvasF[c(paste(r,cols1[i],sep=""))][,1])
   }
 }
@@ -599,15 +605,16 @@ bot <- c("Full Data (no outlier removal)","Full Data (no outlier removal)","Filt
 top <- c("Aggregated in-sample pricing errors","Aggregated out-of-sample pricing errors","Aggregated in-sample pricing errors","Aggregated out-of-sample pricing errors")
 tit <- c("Year-To-Maturity RMSE (BPS)","Relative Pricing RMSE (BPS)","Duration Weighted RMSE (BPS)","Maturity Weighted RMSE (BPS)")
 lab <- c("Full Data (no outlier removal)","Filtered Data")
-col <- data.frame(matrix(nrow=4,ncol=4))
+col <- data.frame(matrix(nrow=2,ncol=4))
 col[1,] <- c("InYtm","InRelPrice","InDurW","InMatW")
 col[2,] <- c("OutYtm","OutRelPrice","OutDurW","OutMatW")
-col[3,] <- c("InYtm","InRelPrice","InDurW","InMatW")
-col[4,] <- c("OutYtm","OutRelPrice","OutDurW","OutMatW")
+#col[3,] <- c("InYtm","InRelPrice","InDurW","InMatW")
+#col[4,] <- c("OutYtm","OutRelPrice","OutDurW","OutMatW")
 
 for (i in 1:4) {
   if (i<=2) dat <- rmse else dat <- rmseF
-  grid.arrange(f_plot(dat,col[i,1],tit[1]),f_plot(dat,col[i,2],tit[2]),f_plot(dat,col[i,3],tit[3]),f_plot(dat,col[i,4],tit[4]),
+  j=c(1,2,1,2)[i]
+  grid.arrange(f_plot(dat,col[j,1],tit[1]),f_plot(dat,col[j,2],tit[2]),f_plot(dat,col[j,3],tit[3]),f_plot(dat,col[j,4],tit[4]),
                nrow=2,ncol=2,top=textGrob(top[i],gp=gpar(fontsize=15,font=1)),
                bottom=textGrob(bot[i],gp=gpar(fontsize=15,font=1)))
 } # end-if
@@ -616,8 +623,8 @@ for (i in 1:4) {
 # Presentation format
 for (i in 1:2) {
   if (i==1) dat <- rmse else dat <- rmseF
-  grid.arrange(f_plot(dat,col[i,1],tit[1]),f_plot(dat,col[i,2],tit[2]),f_plot(dat,col[i,3],tit[3]),f_plot(dat,col[i,4],tit[4]),
-               f_plot(dat,col[i,1],tit[1]),f_plot(dat,col[i,2],tit[2]),f_plot(dat,col[i,3],tit[3]),f_plot(dat,col[i,4],tit[4]),
+  grid.arrange(f_plot(dat,col[1,1],tit[1]),f_plot(dat,col[1,2],tit[2]),f_plot(dat,col[1,3],tit[3]),f_plot(dat,col[1,4],tit[4]),
+               f_plot(dat,col[2,1],tit[1]),f_plot(dat,col[2,2],tit[2]),f_plot(dat,col[2,3],tit[3]),f_plot(dat,col[2,4],tit[4]),
                nrow=2,ncol=4,top=textGrob("Aggregated in-sample and out-of-sample pricing errors",gp=gpar(fontsize=15,font=1)),
                bottom=textGrob(lab[trunc(i/2)+1],gp=gpar(fontsize=15,font=1)))
 } # end-if
@@ -625,9 +632,12 @@ for (i in 1:2) {
 # Smoothness plot
 titS <- c("Tension (BPS)","Curvature (BPS)")
 colS <- c("Tension","Curvature")
-grid.arrange(f_plot(rmse,colS[1],titS[1]),f_plot(rmse,colS[2],titS[2]),
-             nrow=1,ncol=2,top=textGrob("Aggregated smoothness",gp=gpar(fontsize=15,font=1)),
-             bottom=textGrob("Full Data (no outlier removal)",gp=gpar(fontsize=15,font=1)))
+for (i in 1:2) {
+  if (i==1) dat <- rmse else dat <- rmseF
+  grid.arrange(f_plot(dat,colS[1],titS[1]),f_plot(dat,colS[2],titS[2]),
+               nrow=1,ncol=2,top=textGrob("Aggregated smoothness",gp=gpar(fontsize=15,font=1)),
+               bottom=textGrob(lab[i],gp=gpar(fontsize=15,font=1)))
+} # end-forf
 
 
 ###############################################################################
@@ -690,8 +700,11 @@ if (length(datePlots)==4) {
 # Write data
 
 write.xlsx(rmse,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="RMSE",append=FALSE)
+write.xlsx(rmseF,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="RMSE_F",append=TRUE)
 write.xlsx(curvas,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="Curves",append=TRUE)
-write.xlsx(results,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="Buckets",append=TRUE)
+write.xlsx(curvasF,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="Curves_F",append=TRUE)
+write.xlsx(buckets,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="Buckets",append=TRUE)
 write.xlsx(results,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="Results",append=TRUE)
+write.xlsx(resultsF,file=paste(outputDirectory,"yc_fulldata.xlsx",sep=""),sheetName="Results_F",append=TRUE)
 
 ####################################################################################################
