@@ -1,7 +1,7 @@
 
 # Identification ----------------------------------------------------------
 # 
-# FGV - Fundacao Getúlio Vargas
+# FGV - Fundacao Getulio Vargas
 # EESP - Escola de Economia São Paulo
 # MPEF - Mestrado Profissional em Economia e Finanças
 #
@@ -255,6 +255,17 @@ cashflowMatrix <- r_to_py(cashflowMatrix)
 g_hat <- KRcurve(dateReference,priceVector,cashflowMatrix,maxYearsToMaturity)[[1]]
 bondSet$KR <- FitKR(cashflowMatrix,g_hat,dateReference)[[2]]
 
+# Compute root mean squared errors
+rmse <- data.frame(matrix(ncol=2,nrow=6))
+colnames(rmse) <- c("Modelo","REQM")
+rownames(rmse) <- c("CCS","NS","BL","NSS","BC","KR")
+rmse$Modelo <- c("Constrained Cubic Spline","Nelson-Siegel","Bliss","Nelson-Siegel-Svensson","Björk-Christensen","Kernel-Ridge")
+for (i in 1:6) {
+  rmse[i,2] <- sqrt(sum((bondSet[,6+i]-bondSet[,6])^2))
+}
+
+print(rmse)
+
 ###############################################################################
 
 print(bondSet)
@@ -272,11 +283,19 @@ ggplot(data=bondSet,aes(x=DateMaturity))+
         legend.direction = "vertical") +
   scale_colour_manual(name=NULL,
     breaks = c("Mercado","Constrained Cubic Spline","Nelson-Siegel","Bliss","Björk-Christensen","Nelson-Siegel-Svensson","Kernel-Ridge"),
-  values = c("darkgreen","brown","pink","lightgreen","grey","yellow","orange","blue","red"))+
+  values = c("darkgreen","brown","pink","grey","orange","blue","red"))+
   labs(title = paste("Comparação entre curvas de juros ",format(dateReference,"%Y-%m-%d")),
-       y="Taxa",
-       x="Vencimento [ano]")
+       y="Taxa",x="Vencimento [ano]")
 
+# Save plot
+ggsave(filename = paste(outputDirectory,"yc_plot_",format(dateReference,"%Y-%m-%d"),".png",sep=""),units = "in",width = 8, height = 6,dpi = 100)
 
+###############################################################################
+# Write data
+
+# save output errors
+fileName <- paste(outputDirectory,"yc_rmse_",format(dateReference,"%Y-%m-%d"),".xlsx",sep="")
+write.xlsx(bondSet,file=fileName,sheetName="rmse",append=FALSE)
+write.xlsx(bondSet,file=fileName,sheetName="BondSet",append=TRUE)
 
 ####################################################################################################
