@@ -627,7 +627,7 @@ for (i in 1:2) {
 # Smoothness plot
 titS <- c("Tensão (BPS)","Curvatura (BPS)")
 colS <- c("InTension","InCurvature")
-for (i in 1:2) {
+for (i in 1:1) {
   if (i==1) dat <- rmse else dat <- rmseF
   grid.arrange(f_plot(dat,colS[1],titS[1],3),f_plot(dat,colS[2],titS[2],3),
                nrow=1,ncol=2,top=textGrob("Suavidade",gp=gpar(fontsize=15,font=1)),
