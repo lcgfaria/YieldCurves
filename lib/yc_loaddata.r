@@ -46,7 +46,7 @@ ReadBondFile <- function(path, type, year) {
 } # end-function
 
 
-ReadTesouroDireto <- function (path="../database/",coupon=0.1) {
+ReadTesouroDireto <- function (path="../database/",coupon=0.1,y1a=2004,y1b=2004,y2=2022) {
   ## Read bond prices from multiple official treasure files
   ## path: path file
   ## coupon: coupon value for NTN-F (default=0.01)
@@ -60,8 +60,8 @@ ReadTesouroDireto <- function (path="../database/",coupon=0.1) {
   bondRange <- data.frame(matrix(ncol=length(bondTypes), nrow=2))
   colnames(bondRange) <- bondTypes
   rownames(bondRange) <- c("YearBegin", "YearEnd")
-  bondRange[,1] <- c(2004, 2022)
-  bondRange[,2] <- c(2004, 2022)
+  bondRange[,1] <- c(y1a, y2) # LTN range
+  bondRange[,2] <- c(y1b, y2) # NTN-F range
 
   # Read Multiple files
   # Loop to read multiple files (bond types x years)
